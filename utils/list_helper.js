@@ -2,6 +2,8 @@ const dummy = (blogs) => {
 	return 1;
 };
 
+const returnHighestValueObject = (list, attribute) => list.reduce((previous, current) => current[attribute] > previous[attribute] ? current : previous, { [attribute]: -1 });
+
 const totalLikes = (blogs) =>
 	blogs.reduce((previous, current) => previous + current.likes, 0);
 
@@ -25,7 +27,22 @@ const mostBlogs = (blogs) => {
 		return previous.concat({ author: current.author, blogs: 1 });
 	}, []);
 
-	return authors.reduce((previous, current) => current.blogs > previous.blogs ? current : previous, { blogs: -1 });
+	return returnHighestValueObject(authors, 'blogs');
 };
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs };
+const mostLikes = (blogs) => {
+	if (!blogs.length) return null;
+
+	const authors = blogs.reduce((previous, current) => {
+		const currentAuthor = previous.find(author => author.author === current.author);
+		if (currentAuthor){
+			currentAuthor.likes += current.likes;
+			return previous;
+		}
+		return previous.concat({ author: current.author, likes: current.likes });
+	}, []);
+
+	return returnHighestValueObject(authors, 'likes');
+};
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes };

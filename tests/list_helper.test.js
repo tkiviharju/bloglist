@@ -116,10 +116,32 @@ describe('most blogs', () => {
 		expect(blogs).toBe(1);
 	});
 
-	test('of a bigger list is the one with most likes', () => {
+	test('in a bigger list is calculated correctly', () => {
 		const result = listHelper.mostBlogs(listWithManyBlogs);
 		const { author, blogs } = result;
 		expect(author).toBe('Robert C. Martin');
 		expect(blogs).toBe(3);
+	});
+});
+
+
+describe('most likes', () => {
+	test('is null when list is empty', () => {
+		const result = listHelper.mostLikes([]);
+		expect(result).toBe(null);
+	});
+
+	test('when list has one blog is the like count of that blog', () => {
+		const result = listHelper.mostLikes(listWithOneBlog);
+		const { author, likes } = result;
+		expect(author).toBe('Master of Everything');
+		expect(likes).toBe(5);
+	});
+
+	test('in a bigger list is calculated correctly', () => {
+		const result = listHelper.mostLikes(listWithManyBlogs);
+		const { author, likes } = result;
+		expect(author).toBe('Edsger W. Dijkstra');
+		expect(likes).toBe(17);
 	});
 });
