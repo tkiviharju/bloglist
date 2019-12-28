@@ -1,8 +1,8 @@
 const dummy = (blogs) => {
-	console.log(blogs);
 	return 1;
 };
 
-module.exports = {
-	dummy
-};
+const totalLikes = (blogs) =>
+	blogs.reduce((prev, current) => prev + current.likes, 0);
+
+module.exports = { dummy, totalLikes };
