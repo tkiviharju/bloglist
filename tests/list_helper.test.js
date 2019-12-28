@@ -70,6 +70,11 @@ test('dummy returns one', () => {
 });
 
 describe('favorite blog', () => {
+	test('of empty list is null', () => {
+		const result = listHelper.favoriteBlog([]);
+		expect(result).toBe(null);
+	});
+
 	test('when list has one blog is that blog', () => {
 		const result = listHelper.favoriteBlog(listWithOneBlog);
 		expect(result).toEqual(listWithOneBlog[0]);
@@ -95,5 +100,26 @@ describe('total likes', () => {
 	test('of empty list is zero', () => {
 		const result = listHelper.totalLikes([]);
 		expect(result).toBe(0);
+	});
+});
+
+describe('most blogs', () => {
+	test('is null when list is empty', () => {
+		const result = listHelper.mostBlogs([]);
+		expect(result).toBe(null);
+	});
+
+	test('when list has one blog is the author of that', () => {
+		const result = listHelper.mostBlogs(listWithOneBlog);
+		const { author, blogs } = result;
+		expect(author).toBe('Master of Everything');
+		expect(blogs).toBe(1);
+	});
+
+	test('of a bigger list is the one with most likes', () => {
+		const result = listHelper.mostBlogs(listWithManyBlogs);
+		const { author, blogs } = result;
+		expect(author).toBe('Robert C. Martin');
+		expect(blogs).toBe(3);
 	});
 });
