@@ -13,6 +13,12 @@ beforeEach(async () => {
 	await Blog.insertMany(blogs);
 });
 
+test('returned blog has id field', async () => {
+	const response = await api.get('/api/blogs');
+	const { id } = response.body[0];
+	expect(id).toBeDefined();
+});
+
 test('all blogs are returned', async () => {
 	const response = await api.get('/api/blogs');
 	const { length } = response.body;
