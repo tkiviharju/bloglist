@@ -5,12 +5,29 @@ const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog.js');
 const api = supertest(app);
-const { listWithManyBlogs } = require('./mocks.js');
+const mocks = require('./mocks.js');
+
+const initialBlogs = mocks.listWithManyBlogs;
 
 beforeEach(async () => {
 	await Blog.deleteMany({});
-	const blogs = listWithManyBlogs.map(blog => new Blog(blog));
+	const blogs = initialBlogs.map(blog => new Blog(blog));
 	await Blog.insertMany(blogs);
+});
+
+test('can add a blog', async () => {
+	const newBlog = mocks.listWithOneBlog[0];
+	await api
+		.post('/api/blogs')
+		.send(newBlog)
+		.set('Accept', 'application/json')
+		.expect(201)
+		.expect('Content-Type', /application\/json/);
+
+	const response = await api.get('/api/blogs');
+	const { length } = response.body;
+	expect(length).toBe(initialBlogs.length + 1);
+
 });
 
 test('returned blog has id field', async () => {
@@ -22,7 +39,7 @@ test('returned blog has id field', async () => {
 test('all blogs are returned', async () => {
 	const response = await api.get('/api/blogs');
 	const { length } = response.body;
-	expect(length).toBe(listWithManyBlogs.length);
+	expect(length).toBe(initialBlogs.length);
 });
 
 test('the first blog is about react patterns', async () => {
