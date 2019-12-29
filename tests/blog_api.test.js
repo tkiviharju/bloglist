@@ -30,6 +30,13 @@ test('can add a blog', async () => {
 
 });
 
+test('a blog without title or url returns 400', async () => {
+	await api
+		.post('/api/blogs')
+		.send(mocks.blogWithNoTitleAndUrl)
+		.expect(400);
+});
+
 test('a blog with not likes assigned has zero likes', async () => {
 	const response = await api
 		.post('/api/blogs')

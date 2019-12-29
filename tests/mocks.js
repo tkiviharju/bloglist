@@ -7,6 +7,10 @@ const listWithOneBlog = [
 	}
 ];
 
+const blogWithNoTitleAndUrl = {
+	author: 'Elon Musk'
+};
+
 const blogWithNoLikes = {
 	title: 'Amazing blog post',
 	author: 'Your uncle',
@@ -52,4 +56,4 @@ const listWithManyBlogs = [
 	}
 ];
 
-module.exports = { listWithOneBlog, blogWithNoLikes, listWithManyBlogs };
+module.exports = { listWithOneBlog, blogWithNoTitleAndUrl, blogWithNoLikes, listWithManyBlogs };
