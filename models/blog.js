@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { MONGODB_URI } = require('../utils/config.js');
 
 const blogSchema = mongoose.Schema({
 	title: { type: String, required: true },
@@ -9,7 +8,5 @@ const blogSchema = mongoose.Schema({
 });
 
 const Blog = mongoose.model('Blog', blogSchema);
-
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 module.exports = Blog;

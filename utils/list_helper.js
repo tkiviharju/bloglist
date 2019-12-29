@@ -1,7 +1,3 @@
-const dummy = (blogs) => {
-	return 1;
-};
-
 const returnHighestValueObject = (list, attribute) => list.reduce((previous, current) => current[attribute] > previous[attribute] ? current : previous, { [attribute]: -1 });
 
 const totalLikes = (blogs) =>
@@ -45,4 +41,4 @@ const mostLikes = (blogs) => {
 	return returnHighestValueObject(authors, 'likes');
 };
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes };
+module.exports = { totalLikes, favoriteBlog, mostBlogs, mostLikes };
