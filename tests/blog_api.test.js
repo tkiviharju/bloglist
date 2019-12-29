@@ -72,6 +72,26 @@ test('blogs are returned as JSON', async () => {
 		.expect('Content-Type', /application\/json/);
 });
 
+test('deleting a blog is succesful', async () => {
+	let result  = await api.get('/api/blogs');
+
+	const initialBlogs = result.body;
+	const initialLength = initialBlogs.length;
+	const { id } = initialBlogs[0];
+
+	await api.delete(`/api/blogs/${id}`)
+		.expect(204);
+
+	result = await api.get('/api/blogs');
+	const blogsAfter = result.body;
+
+	const lengthAfter = blogsAfter.length;
+	expect(lengthAfter).toBe(initialLength - 1);
+
+	const blogsAfterIds = blogsAfter.map(blog => blog.id);
+	expect(blogsAfterIds.includes(id)).toBe(false);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
