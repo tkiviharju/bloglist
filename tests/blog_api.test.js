@@ -30,6 +30,16 @@ test('can add a blog', async () => {
 
 });
 
+test('a blog with not likes assigned has zero likes', async () => {
+	const response = await api
+		.post('/api/blogs')
+		.send(mocks.blogWithNoLikes);
+
+	const { likes } = response.body;
+	expect(likes).toBeDefined();
+	expect(likes).toBe(0);
+});
+
 test('returned blog has id field', async () => {
 	const response = await api.get('/api/blogs');
 	const { id } = response.body[0];

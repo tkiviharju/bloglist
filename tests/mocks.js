@@ -7,6 +7,12 @@ const listWithOneBlog = [
 	}
 ];
 
+const blogWithNoLikes = {
+	title: 'Amazing blog post',
+	author: 'Your uncle',
+	url: 'https://www.yahoogle.com/blogs/3213'
+};
+
 const listWithManyBlogs = [
 	{
 		title: 'React patterns',
@@ -46,4 +52,4 @@ const listWithManyBlogs = [
 	}
 ];
 
-module.exports = { listWithOneBlog, listWithManyBlogs };
+module.exports = { listWithOneBlog, blogWithNoLikes, listWithManyBlogs };
