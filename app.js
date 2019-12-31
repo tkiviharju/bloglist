@@ -8,6 +8,7 @@ const logger = require('./utils/logger');
 const { requestLogger, unknownEndpoint, errorHandler } = require('./utils/middleware.js');
 const { MONGODB_URI } = require('./utils/config.js');
 const blogsRouter = require('./controllers/blogs.js');
+const usersRouter = require('./controllers/users.js');
 
 logger.info('Connecting to', MONGODB_URI);
 
@@ -22,6 +23,7 @@ app.use(requestLogger);
 
 
 app.use('/api/blogs', blogsRouter);
+app.use('/api/users', usersRouter);
 
 app.use(unknownEndpoint);
 app.use(errorHandler);

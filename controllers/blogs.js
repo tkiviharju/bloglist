@@ -1,6 +1,6 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog.js');
-const promiseHandler = require('../utils/promiseHandler.js');
+const { promiseHandler } = require('../utils/helpers.js');
 
 blogsRouter.get('/', async (req, res, next) => {
 	const { data, error } =  await promiseHandler(Blog.find({}));
