@@ -3,7 +3,7 @@ const User = require('../models/user.js');
 const { promiseHandler, createPasswordHash }  = require('../utils/helpers.js');
 
 usersRouter.get('/', async (req, res, next) => {
-	const { data, error } =  await promiseHandler(User.find({}));
+	const [ data, error ] =  await promiseHandler(User.find({}).populate('blogs', { url: 1, title: 1, author: 1, _id: 1 }));
 	return error ?
 		next(error)
 		:
@@ -29,7 +29,7 @@ usersRouter.post('/', async (req, res, next) => {
 		passwordHash,
 	});
 
-	const { data, error } = await promiseHandler(newUser.save());
+	const [ data, error ] = await promiseHandler(newUser.save());
 	return error ?
 		next(error)
 		:

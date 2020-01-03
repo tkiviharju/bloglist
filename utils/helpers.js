@@ -9,8 +9,8 @@ const createPasswordHash = async (password) => {
 
 const promiseHandler = (promise) => (
 	promise
-		.then(data => ({ data, error: null }))
-		.catch(error => ({ error, data: null }))
+		.then(data => ([ data, null ]))
+		.catch(error => ([ null, error ]))
 );
 
 
