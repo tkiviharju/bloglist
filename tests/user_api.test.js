@@ -41,6 +41,36 @@ describe('When there is a single user in db', () => {
 	});
 });
 
+describe('When new user data is invalid', () => {
+	test('don\'t allow creation with too short username', async () => {
+		const newUser = {
+			username: 'as',
+			name: 'Al Goretex',
+			password: 'valid'
+		};
+
+		await api.post('/api/users')
+			.send(newUser)
+			.expect(400, {
+				error: 'User validation failed: username: Path `username` (`as`) is shorter than the minimum allowed length (3).'
+			});
+	});
+
+	test('don\'t allow creation with too short password', async () => {
+		const newUser = {
+			username: 'Mastermind',
+			name: 'Hamato Yoshi',
+			password: 've'
+		};
+
+		await api.post('/api/users')
+			.send(newUser)
+			.expect(400, {
+				error: 'Password is missing or shorter than minimum allowed length (3)'
+			});
+	});
+});
+
 
 afterAll(() => {
 	mongoose.connection.close();

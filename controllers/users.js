@@ -15,6 +15,13 @@ usersRouter.get('/', async (req, res, next) => {
 usersRouter.post('/', async (req, res, next) => {
 	const { username, name, password } = req.body;
 
+	if (!password || password.length < 3){
+		const error = {
+			message: 'Password is missing or shorter than minimum allowed length (3)',
+			name: 'ValidationError'
+		};
+		return next(error);
+	}
 	const passwordHash = await createPasswordHash(password);
 	const newUser = new User({
 		username,
