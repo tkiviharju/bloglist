@@ -18,8 +18,10 @@ const errorHandler = (error, req, res, next) => {
 		return res.status(400).send({ error: 'malformatted id' });
 	} else if (error.name === 'ValidationError') {
 		return res.status(400).send({ error: error.message });
-	} else if (error.name === 'LoginError'){
+	} else if (['LoginError', 'TokenError'].includes(error.name)){
 		return res.status(401).send({ error: error.message });
+	} else if (error.name === 'JsonWebTokenError'){
+		return res.status(401).json({ error: 'Invalid or missing authorization token' });
 	}
 
 	return next(error);

@@ -1,7 +1,9 @@
 const blogsRouter = require('express').Router();
+const jwt = require('jsonwebtoken');
+
 const Blog = require('../models/blog.js');
 const User = require('../models/user.js');
-const { promiseHandler } = require('../utils/helpers.js');
+const { promiseHandler, getTokenFrom } = require('../utils/helpers.js');
 
 blogsRouter.get('/', async (req, res, next) => {
 	const [ blog, error ] =  await promiseHandler(Blog.find({}).populate('user', { username: 1, name: 1, _id: 1 }));
@@ -13,7 +15,24 @@ blogsRouter.get('/', async (req, res, next) => {
 });
 
 blogsRouter.post('/', async (req, res, next) => {
-	const [ user, userFindError ] = await promiseHandler(User.findOne({}));
+	const token = getTokenFrom(req);
+
+	let decodedToken;
+	try {
+		decodedToken = jwt.verify(token, process.env.SECRET);
+	} catch (error){
+		return next(error);
+	}
+
+	if (!token || !decodedToken.id) {
+		const error = {
+			name: 'TokenError',
+			message: 'token missing or invalid'
+		};
+		return next(error);
+	}
+
+	const [ user, userFindError ] = await promiseHandler(User.findById(decodedToken.id));
 	if (userFindError)
 		return next(userFindError);
 

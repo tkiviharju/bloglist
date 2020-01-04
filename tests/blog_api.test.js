@@ -4,21 +4,43 @@ const supertest = require('supertest');
 
 const app = require('../app');
 const Blog = require('../models/blog.js');
+const User = require('../models/user.js');
 const api = supertest(app);
 const mocks = require('./mocks.js');
 
 const initialBlogs = mocks.listWithManyBlogs;
 
-beforeEach(async () => {
-	await Blog.deleteMany({});
-	const blogs = initialBlogs.map(blog => new Blog(blog));
-	await Blog.insertMany(blogs);
+let savedUser;
+let token;
+beforeAll(async () => {
+	await User.deleteMany({});
+	const response = await api.post('/api/users')
+		.send(mocks.newUser);
+	savedUser = response.body;
+
+	const { username, password } = mocks.newUser;
+	const loginRes = await api.post('/api/login')
+		.send({ username, password });
+
+	token = loginRes.body.token;
+
 });
 
-test('can add a blog', async () => {
+beforeEach(async () => {
+	await Blog.deleteMany({});
+
+	const blogs = initialBlogs.map(blog => {
+		blog.user = savedUser.id;
+		return new Blog(blog);
+	});
+	resp = await Blog.insertMany(blogs);
+});
+
+test('logged user can add a blog', async () => {
 	const newBlog = mocks.listWithOneBlog[0];
 	await api
 		.post('/api/blogs')
+		.set('Authorization', `Bearer ${token}`)
 		.send(newBlog)
 		.set('Accept', 'application/json')
 		.expect(201)
@@ -33,6 +55,7 @@ test('can add a blog', async () => {
 test('a blog without title or url returns 400', async () => {
 	await api
 		.post('/api/blogs')
+		.set('Authorization', `Bearer ${token}`)
 		.send(mocks.blogWithNoTitleAndUrl)
 		.expect(400);
 });
@@ -40,6 +63,7 @@ test('a blog without title or url returns 400', async () => {
 test('a blog with not likes assigned has zero likes', async () => {
 	const response = await api
 		.post('/api/blogs')
+		.set('Authorization', `Bearer ${token}`)
 		.send(mocks.blogWithNoLikes);
 
 	const { likes } = response.body;

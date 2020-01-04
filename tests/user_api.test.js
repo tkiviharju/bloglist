@@ -5,6 +5,7 @@ const supertest = require('supertest');
 const app = require('../app');
 const User = require('../models/user.js');
 const api = supertest(app);
+const mocks = require('./mocks.js');
 const { usersInDb } = require('./test_helper.js');
 const { createPasswordHash } = require('../utils/helpers.js');
 
@@ -22,14 +23,9 @@ describe('When there is a single user in db', () => {
 
 	test('creates a new user successfully', async () => {
 		const usersAtStart = await usersInDb();
-		const newUser = {
-			username: 'mikromikko',
-			name: 'Mikko Mikkonen',
-			password: 'canonicalsecret'
-		};
 
 		await api.post('/api/users')
-			.send(newUser)
+			.send(mocks.newUser)
 			.expect(201)
 			.expect('Content-Type', /application\/json/);
 
@@ -37,7 +33,7 @@ describe('When there is a single user in db', () => {
 		expect(usersAtEnd.length).toBe(usersAtStart.length + 1);
 
 		const usernames = usersAtEnd.map(u => u.username);
-		expect(usernames).toContain(newUser.username);
+		expect(usernames).toContain(mocks.newUser.username);
 	});
 });
 

@@ -56,4 +56,10 @@ const listWithManyBlogs = [
 	}
 ];
 
-module.exports = { listWithOneBlog, blogWithNoTitleAndUrl, blogWithNoLikes, listWithManyBlogs };
+const newUser = {
+	username: 'mikromikko',
+	name: 'Mikko Mikkonen',
+	password: 'canonicalsecret'
+};
+
+module.exports = { listWithOneBlog, blogWithNoTitleAndUrl, blogWithNoLikes, listWithManyBlogs, newUser };
