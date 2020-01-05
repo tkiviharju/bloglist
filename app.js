@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const logger = require('./utils/logger');
-const { requestLogger, unknownEndpoint, errorHandler } = require('./utils/middleware.js');
+const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor } = require('./utils/middleware.js');
 const { MONGODB_URI } = require('./utils/config.js');
 const blogsRouter = require('./controllers/blogs.js');
 const usersRouter = require('./controllers/users.js');
@@ -21,6 +21,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(requestLogger);
+app.use(tokenExtractor);
 
 
 app.use('/api/blogs', blogsRouter);
