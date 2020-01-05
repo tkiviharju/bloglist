@@ -6,13 +6,24 @@ const User = require('../models/user.js');
 const { promiseHandler } = require('../utils/helpers.js');
 
 blogsRouter.get('/', async (req, res, next) => {
-	const [ blog, error ] =  await promiseHandler(Blog.find({}).populate('user', { username: 1, name: 1, _id: 1 }));
+	const [ blogs, error ] = await promiseHandler(Blog.find({}).populate('user', { username: 1, name: 1, _id: 1 }));
+	return error ?
+		next(error)
+		:
+		res.status(200).send(blogs);
+
+});
+
+
+blogsRouter.get('/:id', async (req, res, next) => {
+	const { id } = req.params;
+	const [ blog, error ] = await promiseHandler(Blog.findById(id).populate('user', { username: 1, name: 1, _id: 1 }));
 	return error ?
 		next(error)
 		:
 		res.status(200).send(blog);
-
 });
+
 
 blogsRouter.post('/', async (req, res, next) => {
 	let decodedToken;
@@ -49,13 +60,44 @@ blogsRouter.post('/', async (req, res, next) => {
 		res.status(201).send(savedBlog);
 });
 
+
 blogsRouter.delete('/:id', async (req, res, next) => {
+	let decodedToken;
+	try {
+		decodedToken = jwt.verify(req.token, process.env.SECRET);
+	} catch (error){
+		return next(error);
+	}
+
+	if (!req.token || !decodedToken.id) {
+		const error = {
+			name: 'TokenError',
+			message: 'token missing or invalid'
+		};
+		return next(error);
+	}
+
 	const { id } = req.params;
-	const [ , error ] = await promiseHandler(Blog.findByIdAndDelete(id));
-	return error ?
-		next(error)
+
+	const [ blog, blogFindError ] = await promiseHandler(Blog.findById(id));
+	if (blogFindError)
+		return next(blogFindError);
+
+	const { user } = blog;
+	if (user.toString() !== decodedToken.id.toString()){
+		const error = {
+			name: 'AuthorizationError',
+			message: 'Not authorized to perform delete operation'
+		};
+		return next(error);
+	}
+
+	const [ , deleteError ] = await promiseHandler(Blog.findByIdAndDelete(id));
+	return deleteError ?
+		next(deleteError)
 		:
 		res.sendStatus(204);
 });
+
 
 module.exports = blogsRouter;
